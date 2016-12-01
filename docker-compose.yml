@@ -1,0 +1,35 @@
+version: '2'
+
+services: 
+  web:
+    image: mediatainment/php56-apache
+    ports:
+      - "80:80"
+    depends_on:
+      - mysql
+    links: 
+      - mysql
+    volumes:
+      - ./config/php.ini:/usr/local/etc/php/php.ini
+      - ./:/var/www/html
+      
+  mysql:
+    image: mysql:5.6
+    ports:
+      - "3306:3306"  
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=db412160
+      - MYSQL_USER=db412160
+      - MYSQL_PASSWORD=db412160
+    volumes: 
+      - ./.db-data:/var/lib/mysql
+      - ./config/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./db-dumps:/usr/src
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - mysql:db
+    ports:
+      - "88:80"
